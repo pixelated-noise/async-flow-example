@@ -2,7 +2,8 @@
   (:require [clojure.core.async :as async]
             [clojure.core.async.flow :as flow]
             [clojure.pprint :as pp]
-            [clojure.datafy :as d]))
+            [clojure.datafy :as d]
+            [clojure.core.async.flow-monitor :as monitor]))
 
 (set! *warn-on-reflection* true)
 
@@ -79,16 +80,51 @@
 (comment
   (def g (flow/create-flow gdef))
   (pp/pprint (d/datafy g))
-  (monitoring (flow/start g))
-  ;;wait a bit for craps to print
 
+  (monitoring (flow/start g))
   (flow/resume g)
   (flow/pause g)
+  ;;wait a bit for craps to print
 
   (flow/pause-proc g :prn-sink)
+
   (flow/resume-proc g :prn-sink)
   (flow/inject g [:craps-finder :in] [[1 2] [2 1] [2 1] [6 6] [6 6] [4 3] [1 1]])
   (pp/pprint (flow/ping g))
   (pp/pprint (flow/ping-proc g :prn-sink))
   (flow/stop g)
+  (monitor/stop-server server-state)
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; with web monitor
+(comment
+  (def g (flow/create-flow gdef))
+  (flow/start g)
+  (def server-state (monitor/start-server {:flow g :port 9876}))
+  ;; http://localhost:9876/index.html#/?port=9876
+  (flow/resume g)
+
+  (flow/pause g)
+  ;;wait a bit for craps to print
+
+  (flow/pause-proc g :prn-sink)
+
+  (flow/resume-proc g :prn-sink)
+  (flow/inject g [:craps-finder :in] [[1 2] [2 1] [2 1] [6 6] [6 6] [4 3] [1 1]])
+  (pp/pprint (flow/ping g))
+  (pp/pprint (flow/ping-proc g :prn-sink))
+  (flow/stop g)
+  (monitor/stop-server server-state)
   )

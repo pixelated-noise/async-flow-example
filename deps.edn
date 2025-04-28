@@ -1,4 +1,4 @@
 {:paths ["src"]
- :deps  {org.clojure/clojure    {:mvn/version "1.12.0"}
-         org.clojure/core.async {:git/url "https://github.com/clojure/core.async.git"
-                                 :sha     "82f823b61b2ea06b659c2dc81529a64ea1cb4fdc"}}}
+ :deps  {org.clojure/clojure                       {:mvn/version "1.12.0"}
+         org.clojure/core.async                    {:mvn/version "1.9.808-alpha1"}
+         io.github.clojure/core.async.flow-monitor {:git/tag "v0.1.0" :git/sha "9d02164"}}}
